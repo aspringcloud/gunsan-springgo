@@ -58,6 +58,7 @@ docker-compose up -d web
 ```
 
 * pgAdmin4
+## https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
 ```bash
-docker run --rm -d -p 5050:5050 thajeztah/pgadmin4
+docker run -p 5050:80 -e 'PGADMIN_DEFAULT_EMAIL=spring' -e 'PGADMIN_DEFAULT_PASSWORD=spring#007' -d dpage/pgadmin4
 ```

@@ -32,7 +32,7 @@ services:
       CERTBOT_EMAIL: bcchoi@aspringcloud.com
       # variable names are space-separated
       ENVSUBST_VARS: FQDN
-      FQDN: test.springcar.io
+      FQDN: api.aspringcloud.com
     volumes:
       - ./nginx:/etc/nginx/user.conf.d:ro
       - letsencrypt:/etc/letsencrypt    

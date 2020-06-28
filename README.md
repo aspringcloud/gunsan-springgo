@@ -1,8 +1,18 @@
-* production에서 실행
+* Prod 최초 실행
 ```bash
-$ docker-compose -f docker-compose.prod.yml up -d --build
-$ docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
-$ docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
+docker-compose -f docker-compose.prod.yml up -d --build
+docker-compose -f docker-compose.prod.yml exec web python manage.py makemigration --noinput
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input
+docker-compose -f docker-compose.prod.yml exec web python manage.py loaddata backup.json
+```
+* Prod 초기화 재실행
+```bash
+docker-compose -f docker-compose.prod.yml down -v
+docker-compose -f docker-compose.prod.yml exec web python manage.py makemigrations --noinput
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
+docker-compose -f docker-compose.prod.yml exec web python manage.py loaddata backup.json
 ```
 * model 변경후 해야할 작업
 

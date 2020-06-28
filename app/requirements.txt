@@ -5,6 +5,6 @@ django-rest-swagger
 djangorestframework
 djangorestframework-jwt
 django-rest-auth
-Pillow
 drf-yasg
 geopy
+Pillow

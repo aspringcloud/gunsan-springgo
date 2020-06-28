@@ -56,3 +56,8 @@ docker run -d --rm -e PASSWORD=spring -p 0.0.0.0:10104:10104 -v "${HOME}/.local/
 docker-compose build web
 docker-compose up -d web
 ```
+
+* pgAdmin4
+```bash
+docker run --rm -d -p 5050:5050 thajeztah/pgadmin4
+```

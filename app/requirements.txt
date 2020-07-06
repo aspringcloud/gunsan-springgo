@@ -8,3 +8,4 @@ django-rest-auth
 drf-yasg
 geopy
 Pillow
+django-cors-headers

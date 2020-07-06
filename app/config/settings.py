@@ -42,13 +42,16 @@ INSTALLED_APPS = [
     'rest_auth',
     'api.apps.ApiConfig',
     'drf_yasg',
+    'corsheaders',
+    'pytz',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # 서버에서 랜더링이 아니므로 필요없다. API로 분리되어 있음.
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

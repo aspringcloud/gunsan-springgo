@@ -362,8 +362,18 @@ class SiteViewSet(mixins.ListModelMixin,
         '401': "Authentication credentials were not provided.",
     },
 ))
+@method_decorator(name='partial_update', decorator=swagger_auto_schema(
+    operation_id='지정된 정류장 정보 업데이트',
+    operation_description='지정된 정류장 정보를 부분 업데이트 한다.',
+    responses={
+        '200': "Ok",
+        '403': "Unauthorized access to accounts",
+        '401': "Authentication credentials were not provided.",
+    },
+))
 class StationViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
+                     mixins.UpdateModelMixin,
                      viewsets.GenericViewSet):
     queryset = Station.objects.all().order_by('mid')
     serializer_class = StationSerializer

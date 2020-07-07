@@ -104,6 +104,7 @@ class Station(models.Model):
     lat = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True, verbose_name=_('정류소 위도'))
     lon = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True, verbose_name=_('정류소 경도'))
     site = models.ForeignKey(Site, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('운영장소'))
+    eta = ArrayField(models.CharField(max_length=250), blank=True, null=True, default=list, verbose_name=_('Estimated time of arrival'))
 
     def __str__(self):
         if not self.name:

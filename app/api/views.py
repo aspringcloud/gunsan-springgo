@@ -341,7 +341,12 @@ class SiteViewSet(mixins.ListModelMixin,
         return Response(newobj, status=status.HTTP_200_OK)
 
     # todo
-    # def list(self...)
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = StationSerializer(queryset, many=True, context={'request': request})
+        newobj = serializer.data
+        print(newobj)
+        return Response(newobj, status=status.HTTP_200_OK)
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(

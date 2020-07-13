@@ -336,6 +336,23 @@ class SiteViewSet(mixins.ListModelMixin,
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         newobj = serializer.data
+
+        newobj = serializer.data
+        userSerializer = user.objects.all()
+
+        userinfo = []
+        #user의 정보 조회 및 추가
+        for userindex in newobj['user']:
+            for pkIndex in userSerializer:
+                if userindex == pkIndex['pk']:
+                    userinfo.append({"pk":userindex, "email":pkIndex['email'], \
+                                    "username":pkIndex['username']
+                                })
+            else:
+                continue
+
+        # newobj['user'] = userinfo
+        newobj['user'] = '1'
         # if instance.image:
         #    newobj['image_url'] = instance.image.url 필요없음
         return Response(newobj, status=status.HTTP_200_OK)
@@ -346,6 +363,21 @@ class SiteViewSet(mixins.ListModelMixin,
         serializer = StationSerializer(queryset, many=True, context={'request': request})
         newobj = serializer.data
         print(newobj)
+        userSerializer = user.objects.all()
+
+        userinfo = []
+        #user의 정보 조회 및 추가
+        for userindex in newobj['user']:
+            for pkIndex in userSerializer:
+                if userindex == pkIndex['pk']:
+                    userinfo.append({"pk":userindex, "email":pkIndex['email'], \
+                                    "username":pkIndex['username']
+                                })
+            else:
+                continue
+        newobj.setdefault                
+        newobj['user'] = '1'
+        # newobj['user'] = userinfo
         return Response(newobj, status=status.HTTP_200_OK)
 
 

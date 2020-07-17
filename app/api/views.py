@@ -336,48 +336,52 @@ class SiteViewSet(mixins.ListModelMixin,
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         newobj = serializer.data
-
-        newobj = serializer.data
-        userSerializer = user.objects.all()
-
+        
+        # User에 대한 정보 추가
+        queryset = User.objects.all().order_by('id')
+        UserS = UserSerializer(queryset, many=True, context={'request': request})
+        
         userinfo = []
-        #user의 정보 조회 및 추가
-        for userindex in newobj['user']:
-            for pkIndex in userSerializer:
-                if userindex == pkIndex['pk']:
-                    userinfo.append({"pk":userindex, "email":pkIndex['email'], \
-                                    "username":pkIndex['username']
-                                })
+        for userIndex in UserS.data:
+            if userIndex['pk'] in newobj['user']:
+                userinfo.append( {
+                                        "pk":userIndex['pk'], \
+                                        "email":userIndex['email'], \
+                                        "username":userIndex['username']
+                                    })
             else:
                 continue
+        
+        newobj['user'] = userinfo
 
-        # newobj['user'] = userinfo
-        newobj['user'] = '1'
-        # if instance.image:
-        #    newobj['image_url'] = instance.image.url 필요없음
-        return Response(newobj, status=status.HTTP_200_OK)
+        return Response(newobj, status=status.HTTP_401_UNAUTHORIZED)
 
     # todo
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = StationSerializer(queryset, many=True, context={'request': request})
+    def list(self, request ):
+        instance = Site.objects.all()
+        serializer = SiteSerializer(instance, many=True)
         newobj = serializer.data
-        print(newobj)
-        userSerializer = user.objects.all()
+        
+        queryset = User.objects.all().order_by('id')
+        # userinstance = User.objects.all()
+        UserS = UserSerializer(queryset, many=True, context={'request': request})
+        
+        
+        #각 Station과 User의 id 비교 후, 일치되는 데이터를 찾아 추가.
+        for userindex in newobj:
+            userinfo = []
+            for pkIndex in UserS.data:
+                if pkIndex['pk'] in userindex['user']:
+                    userinfo.append( {
+                                        "pk":pkIndex['pk'], \
+                                        "email":pkIndex['email'], \
+                                        "username":pkIndex['username']
+                                    })
+                else:
+                    continue
+                    
+            userindex['user'] = userinfo
 
-        userinfo = []
-        #user의 정보 조회 및 추가
-        for userindex in newobj['user']:
-            for pkIndex in userSerializer:
-                if userindex == pkIndex['pk']:
-                    userinfo.append({"pk":userindex, "email":pkIndex['email'], \
-                                    "username":pkIndex['username']
-                                })
-            else:
-                continue
-        newobj.setdefault                
-        newobj['user'] = '1'
-        # newobj['user'] = userinfo
         return Response(newobj, status=status.HTTP_200_OK)
 
 

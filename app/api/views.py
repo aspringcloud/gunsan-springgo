@@ -353,8 +353,7 @@ class SiteViewSet(mixins.ListModelMixin,
                 continue
         
         newobj['user'] = userinfo
-
-        return Response(newobj, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(newobj, status=status.HTTP_200_OK)
 
     # todo
     def list(self, request ):

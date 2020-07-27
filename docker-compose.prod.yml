@@ -1,6 +1,11 @@
 version: '3.7'
 
 services:
+  base-web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.base.prod
+
   web:
     build:
       context: ./app
@@ -14,7 +19,6 @@ services:
     env_file:
       - ./.env.prod
     restart: always
-
 
   nginx:
     restart: unless-stopped

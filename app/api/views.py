@@ -336,49 +336,44 @@ class SiteViewSet(mixins.ListModelMixin,
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         newobj = serializer.data
-        
+
         # User에 대한 정보 추가
         queryset = User.objects.all().order_by('id')
         UserS = UserSerializer(queryset, many=True, context={'request': request})
-        
+
         userinfo = []
         for userIndex in UserS.data:
             if userIndex['pk'] in newobj['user']:
-                userinfo.append( {
-                                        "pk":userIndex['pk'], \
-                                        "email":userIndex['email'], \
-                                        "username":userIndex['username']
-                                    })
+                userinfo.append({"pk": userIndex['pk'],
+                                 "email": userIndex['email'],
+                                 "username": userIndex['username']})
             else:
                 continue
-        
+
         newobj['user'] = userinfo
         return Response(newobj, status=status.HTTP_200_OK)
 
     # todo
-    def list(self, request ):
+    def list(self, request):
         instance = Site.objects.all()
         serializer = SiteSerializer(instance, many=True)
         newobj = serializer.data
-        
+
         queryset = User.objects.all().order_by('id')
         # userinstance = User.objects.all()
         UserS = UserSerializer(queryset, many=True, context={'request': request})
-        
-        
-        #각 Station과 User의 id 비교 후, 일치되는 데이터를 찾아 추가.
+
+        # 각 Station과 User의 id 비교 후, 일치되는 데이터를 찾아 추가.
         for userindex in newobj:
             userinfo = []
             for pkIndex in UserS.data:
                 if pkIndex['pk'] in userindex['user']:
-                    userinfo.append( {
-                                        "pk":pkIndex['pk'], \
-                                        "email":pkIndex['email'], \
-                                        "username":pkIndex['username']
-                                    })
+                    userinfo.append({"pk": pkIndex['pk'],
+                                     "email": pkIndex['email'],
+                                     "username": pkIndex['username']})
                 else:
                     continue
-                    
+
             userindex['user'] = userinfo
 
         return Response(newobj, status=status.HTTP_200_OK)
@@ -714,7 +709,7 @@ class RouteViewSet(mixins.ListModelMixin,
 class OperationLogViewSet(mixins.ListModelMixin,
                           mixins.RetrieveModelMixin,
                           viewsets.GenericViewSet):
-    queryset = OperationLog.objects.all().order_by('mid')
+    queryset = OperationLog.objects.all()
 
     def get_serializer_class(self):
         if self.action == 'start_vehicle' or self.action == 'stop_vehicle':

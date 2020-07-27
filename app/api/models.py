@@ -107,6 +107,7 @@ class Station(models.Model):
     eta = ArrayField(models.CharField(max_length=250), blank=True, null=True, default=list, verbose_name=_('Estimated time of arrival'))
     stat2sta = ArrayField(models.CharField(max_length=250), blank=True, null=True, default=list, verbose_name=_('Estimated time of each station'))
     sta_Order = models.DecimalField(max_digits=2, decimal_places=0, blank=True, null=True, verbose_name=_("site 별  station 운영 순서"))
+
     def __str__(self):
         if not self.name:
             return self.mid
@@ -325,6 +326,8 @@ class OperationLog(models.Model):
     task = models.TextField(blank=True, null=True, verbose_name=_('Task'))
     weather = models.PositiveSmallIntegerField(choices=WEATHER_TYPE_CHOICES, default=1, blank=True, null=True, verbose_name=_('하루평균날씨'))
     temperature = models.FloatField(blank=True, null=True, verbose_name=_('하루평균실외온도'))
+    dtg_volume = models.DecimalField(max_digits=22, decimal_places=1, blank=True, null=True, verbose_name=_('DTG 파일 용량(KB)'))
+    dvr_volume = models.DecimalField(max_digits=22, decimal_places=2, blank=True, null=True, verbose_name=_('DVR 파일 용량(GB)'))
 
 
 class V2X(models.Model):

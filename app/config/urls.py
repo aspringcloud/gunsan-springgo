@@ -32,6 +32,7 @@ schema_view = get_schema_view(openapi.Info(title="SpringGo Server 통합관제 A
                                            license=openapi.License(name="BSD License"),
                                            ),
                               public=True,
+                              url="https://test.aspringcloud.com/api/",
                               permission_classes=(permissions.AllowAny,),)
 
 urlpatterns = [

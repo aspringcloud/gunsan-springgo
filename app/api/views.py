@@ -276,7 +276,7 @@ class SiteViewSet(mixins.ListModelMixin,
     @swagger_auto_schema(
         responses={
             '200': SiteSummarySerializer,
-            '404': "Not Found",
+            '404': "Not Foun",
             '401': 'Authentication credentials were not provided.'
         },
         operation_id='총 차량, 정류장, 키오스크, 차고지, 경로, 데이터허브, 관리자 숫자',
@@ -332,6 +332,9 @@ class SiteViewSet(mixins.ListModelMixin,
         serializer.is_valid()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+  
+      
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -351,6 +354,53 @@ class SiteViewSet(mixins.ListModelMixin,
                 continue
 
         newobj['user'] = userinfo
+        count = 0
+                # 각 사이트 별 차량 갯수 계산
+        qs = Vehicle.objects.all().order_by('mid')
+
+        serializer = VehicleSerializer(qs, many=True, context={'request': request})
+        for vehicle_index in serializer.data:
+            if vehicle_index['site'] is not None and int(vehicle_index['site']) == newobj['id']:
+                count += 1
+        newobj['vehicle_count'] = count
+
+        # 각 사이트별 스테이션 갯수 계산
+        count = 0
+        qs = Station.objects.all().order_by('mid')
+        serializer = StationSerializer(qs, many=True, context={'request': request})
+        for station_index in serializer.data:
+            if station_index['site'] is not None and int(station_index['site']) == newobj['id']:
+                count += 1
+        newobj['station_count'] = count
+
+        # 각 사이트별 키오스크 갯수
+        count = 0
+        qs = Kiosk.objects.all().order_by('mid')
+        serializer = KioskSerializer(qs, many=True, context={'request': request})
+        for kiosk_index in serializer.data:
+            if kiosk_index['operation'] and kiosk_index['site'] is not None and int(kiosk_index['site']) == newobj['id']:
+                count += 1
+        newobj['kiosk_count'] = count
+
+
+        count = 0
+        qs = Route.objects.all().order_by('mid')
+        serializer = RouteSerializer(qs, many=True, context={'request': request})
+        for route_index in serializer.data:
+            if route_index['operation'] and route_index['site'] is not None and int(route_index['site']) == newobj['id']:
+                count = count + 1 
+        newobj['route_count'] = count
+
+        count = 0
+        qs = Garage.objects.all().order_by('mid')
+        serializer = GarageSerializer(qs, many=True, context={'request': request})
+        for garage_index in serializer.data:
+            if  garage_index['site'] is not None and int(garage_index['site']) == newobj['id']:
+                count = count + 1
+        newobj['garege_count'] = count
+        
+        serializer = SiteSummarySerializer(data=newobj)
+        serializer.is_valid()
         return Response(newobj, status=status.HTTP_200_OK)
 
     # todo

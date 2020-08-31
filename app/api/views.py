@@ -355,7 +355,7 @@ class SiteViewSet(mixins.ListModelMixin,
 
         newobj['user'] = userinfo
         count = 0
-                # 각 사이트 별 차량 갯수 계산
+        # 각 사이트 별 차량 갯수 계산
         qs = Vehicle.objects.all().order_by('mid')
 
         serializer = VehicleSerializer(qs, many=True, context={'request': request})

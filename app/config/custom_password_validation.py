@@ -100,8 +100,8 @@ class MinimumLengthValidator:
         if len(password) < self.min_length:
             raise ValidationError(
                 ngettext(
-                    "%(min_length)글자 이상의 비밀번호를 입렵하세요",
-                    "%(min_length)글자 이상의 비밀번호를 입렵하세요",
+                    u"%(min_length)d 글자 이상의 비밀번호를 입렵하세요",
+                    u"%(min_length)d 글자 이상의 비밀번호를 입렵하세요",
                     self.min_length
                 ),
                 code='password_too_short',
@@ -112,7 +112,7 @@ class MinimumLengthValidator:
         return ngettext(
             # "Your password must contain at least %(min_length)d character.",
             # "Your password must contain at least %(min_length)d characters.",
-            "%(min_length)글자 이상의 비밀번호를 입렵하세요",
+            u"%(min_length)d 글자 이상의 비밀번호를 입렵하세요",
             self.min_length
         ) % {'min_length': self.min_length}
 

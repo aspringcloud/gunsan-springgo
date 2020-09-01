@@ -101,6 +101,7 @@ class MinimumLengthValidator:
             raise ValidationError(
                 ngettext(
                     "%(min_length)글자 이상의 비밀번호를 입렵하세요",
+                    "%(min_length)글자 이상의 비밀번호를 입렵하세요",
                     self.min_length
                 ),
                 code='password_too_short',

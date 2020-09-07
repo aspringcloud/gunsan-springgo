@@ -5,7 +5,7 @@ from api.models import User, UserProfile, Site, Station, Kiosk, Vehicle, Garage,
 from api.serializers import UserSerializer, SiteSerializer, StationSerializer, KioskSerializer, \
     VehicleSerializer, GarageSerializer, RouteSerializer, OperationLogSerializer, ManagerSerializer, \
     ManagerLoginSerializer, ManagerEmailSerializer, V2XSerializer, DataHubSerializer, \
-    VehiclePartialUpdateSerializer, StationListSerializer, \
+    VehiclePartialUpdateSerializer, StationListSerializer, ChangePasswordSerializer,\
     SiteSummarySerializer, OperationLogSummarySerializer, \
     NoticeSerializer, MicrosoftGraphSerializer, ManagerMessageSerializer, \
     OperationLogPartialUpdateSerializer, OperationLogPartial2UpdateSerializer, \
@@ -14,12 +14,23 @@ from api.serializers import UserSerializer, SiteSerializer, StationSerializer, K
     OperationLogByDatepdateSerializer, AdSerializer
 
 
+
+# 비밀번호 변경 기능을 위한 추가
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from rest_framework.permissions import IsAuthenticated   
+from django.contrib.auth import login, authenticate
+
+# 비밀번호 유효성 검사를 위한 추가
+from config.custom_password_validation import validate_password
+from django.core.exceptions import ValidationError
+
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import mixins, status
+from rest_framework import mixins, status, generics
 from drf_yasg import openapi
 from geopy.distance import great_circle
 
@@ -106,7 +117,9 @@ class UserViewSet(mixins.ListModelMixin,
             return ManagerEmailSerializer
         elif self.action == 'sendmessage':
             return ManagerMessageSerializer
-        else:
+        elif self.action == 'change_password':
+            return ChangePasswordSerializer
+        
             return UserSerializer
 
     @swagger_auto_schema(
@@ -126,6 +139,44 @@ class UserViewSet(mixins.ListModelMixin,
         user.save()
         self._sendemail('임시 암호 전달', request.data['email'], password)
         return Response({'status': password})
+
+    @swagger_auto_schema(
+    responses={
+        '200': '비밀번호 변경 성공',
+        '404': "새로 입력한 비밀번호가 일치하지 않음",
+        '401': '비밀번호 일치 실패'
+    },
+    e_mail_id = "사용자 id",
+    origin_password = "현재 비밀번호",
+    new_password = '변경하기 원하는 새로운 비밀번호',
+    conform_new_password = '새로운 비밀번호 확인'
+    )
+    @action(detail=False, methods=['post'])
+    # @login_required
+    def change_password(self, request, pk=None):
+            print(request, request.data)
+            uid = request.data["e_mail_id"]
+            current_password = request.data["old_password"]
+            user = None
+            user = authenticate(username=uid, password=current_password)
+            print(user, uid, current_password)
+            if user:
+                new_password = request.data["new_password"]
+                password_confirm = request.data["confirm_new_password"]
+                if new_password == password_confirm:
+                    try:
+                        validate_password(new_password, user)
+                        user.set_password(new_password)
+                        user.save()
+                        # 비밀번호 변경 후, 연결 유지를 위한 명령 문이라지만, 작동 여부는 확인 불가
+                        # update_session_auth_hash(request, user)
+                        return Response(["새로운 비밀번호로 변경됐습니다."], status=status.HTTP_200_OK)
+                    except ValidationError as e:
+                        return Response(e, status=status.HTTP_401_UNAUTHORIZED)
+                else:
+                    return Response(["두 개의 비밀번호가 일치하지 않습니다."], status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response(["비밀번호가 일치하지 않습니다."], status=status.HTTP_401_UNAUTHORIZED)
 
     @swagger_auto_schema(
         responses={
@@ -1000,7 +1051,8 @@ class ManagerViewSet(mixins.CreateModelMixin,
             return ManagerEmailSerializer
         else:
             return ManagerSerializer
-
+   
+    
     @swagger_auto_schema(
         responses={
             '200': '{미정}',

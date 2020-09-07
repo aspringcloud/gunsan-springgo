@@ -119,7 +119,7 @@ class UserViewSet(mixins.ListModelMixin,
             return ManagerMessageSerializer
         elif self.action == 'change_password':
             return ChangePasswordSerializer
-        
+        else:
             return UserSerializer
 
     @swagger_auto_schema(

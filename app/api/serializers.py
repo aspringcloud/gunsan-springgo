@@ -8,6 +8,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ('team', 'phone', 'level', 'photo')
 
+# 비밀번호 변경을 위한 추가
+# https://www.it-swarm.dev/ko/python/django-rest-framework%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EC%9E%90-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8%EB%A5%BC-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95%EC%9D%80-%EB%AC%B4%EC%97%87%EC%9E%85%EB%8B%88%EA%B9%8C/827091059/
+class ChangePasswordSerializer(serializers.Serializer):
+
+    """
+    Serializer for password change endpoint.
+    """
+    e_mail_id = serializers.EmailField()
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_new_password = serializers.CharField(required=True)
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=True)

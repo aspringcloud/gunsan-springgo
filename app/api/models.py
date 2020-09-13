@@ -273,6 +273,9 @@ class Vehicle(models.Model):
     isparked = models.BooleanField(default=False, blank=True, null=True, verbose_name=_('주차여부'))
     passed_station = models.ForeignKey(Station, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('막지나온역'))
     eta = ArrayField(models.CharField(max_length=250), blank=True, null=True, default=list, verbose_name=_('Estimated time of arrival'))
+    latest_power_off = models.DateTimeField(default= None, blank=True, null=True, verbose_name=_('최근 차량 전원 off 시간'))
+    latest_power_on = models.DateTimeField(default= None, blank=True, null=True, verbose_name=_('최근 차량 전원 on 시간'))
+    mac_address = models.CharField(max_length=17, blank=True, null=True, verbose_name=_('MAC 주소'))
     # v2x
     # remove light
 

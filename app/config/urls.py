@@ -24,15 +24,15 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 
-schema_view = get_schema_view(openapi.Info(title="SpringGo Server 통합관제 API",
+schema_view = get_schema_view(openapi.Info(title="온리원 고군산 Server 통합관제 API",
                                            default_version='v0.1',
                                            description="통합관제UI, 관리자 모바일앱, 사용자앱, Native 통합관제 API",
                                            terms_of_service="http//tasio.io",
-                                           contact=openapi.Contact(email="bcchoi@aspringcloud.com"),
+                                           contact=openapi.Contact(email="dwyug@aspringcloud.com"),
                                            license=openapi.License(name="BSD License"),
                                            ),
                               public=True,
-                              url="https://test.aspringcloud.com/api/",
+                              url="https://gunsanapi.tasio.io:300/api/",
                               permission_classes=(permissions.AllowAny,),)
 
 urlpatterns = [

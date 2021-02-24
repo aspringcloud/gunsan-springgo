@@ -88,6 +88,9 @@ class Site(models.Model):
     current_weather = models.CharField(max_length=100, blank=True, null=True, verbose_name=_('현재날씨'))
     weather_forecast = models.CharField(max_length=300, blank=True, null=True, verbose_name=_('날씨예보'))
     air_quality = models.CharField(max_length=250, blank=True, null=True, verbose_name=_('대기상태'))
+    # current_weather = models.TextField(blank=True, null=True, verbose_name=_('현재날씨'))
+    # weather_forecast = models.TextField(blank=True, null=True, verbose_name=_('날씨예보'))
+    # air_quality = models.TextField(blank=True, null=True, verbose_name=_('대기상태'))
 
     def __str__(self):
         if not self.name:
@@ -261,10 +264,10 @@ class Vehicle(models.Model):
     operation_mode = models.PositiveSmallIntegerField(choices=OPERATION_MODE_CHOICES, default=1, blank=True, null=True, verbose_name=_('운행모드'))
     state = models.PositiveSmallIntegerField(choices=STATE_CHOICES, default=1, blank=True, null=True, verbose_name=_('상태'))
     drive_mode = models.PositiveSmallIntegerField(choices=DRIVE_MODE_CHOICES, default=1, blank=True, null=True, verbose_name=_('주행모드'))
-    webcam1 = models.URLField(blank=True, null=True, verbose_name=_('카메라#1 URL'))
-    webcam2 = models.URLField(blank=True, null=True, verbose_name=_('카메라#2 URL'))
-    webcam3 = models.URLField(blank=True, null=True, verbose_name=_('카메라#3 URL'))
-    webcam4 = models.URLField(blank=True, null=True, verbose_name=_('카메라#4 URL'))
+    webcam1 = models.CharField(max_length=150, blank=True, null=True, verbose_name=_('카메라#1 URL'))
+    webcam2 = models.CharField(max_length=150, blank=True, null=True, verbose_name=_('카메라#2 URL'))
+    webcam3 = models.CharField(max_length=150, blank=True, null=True, verbose_name=_('카메라#3 URL'))
+    webcam4 = models.CharField(max_length=150, blank=True, null=True, verbose_name=_('카메라#4 URL'))
     distance = models.FloatField(blank=True, null=True, verbose_name=_('운행중 누적거리(km)'))
     brakeactuator = models.FloatField(blank=True, null=True, verbose_name=_('브레이크 모터'))
     parkingbrake = models.FloatField(blank=True, null=True, verbose_name=_('주차 브레이크'))

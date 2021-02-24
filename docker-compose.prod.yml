@@ -10,13 +10,14 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.prod
-    command: gunicorn --workers=33 config.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn --workers=17 config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
-      - ${PWD}:/home/app/web/tmp
     expose:
       - 8000
+    ports:
+      - 8000:8000
     env_file:
       - ./.env
     restart: always
@@ -25,18 +26,16 @@ services:
 
   nginx:
     restart: unless-stopped
-    image: staticfloat/nginx-certbot
+    image: nginx
     ports:
       - 80:80
-      - 443:443
-    environment:
-      CERTBOT_EMAIL: bcchoi@aspringcloud.com
-      # variable names are space-separated
-      ENVSUBST_VARS: FQDN
-      FQDN: test.aspringcloud.com
+      - 300:300
     volumes:
-      - ./nginx:/etc/nginx/user.conf.d:ro
-      - letsencrypt:/etc/letsencrypt    
+      # - ./nginx/user:/etc/nginx/user.conf.d:ro
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./cert/RootChain:/etc/pki/tls/certs
+      - ./cert/private:/etc/pki/tls/private
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
     depends_on:
@@ -55,9 +54,18 @@ services:
     volumes:
       - /data0:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    env_file:
+      - ./.env.prod.pg
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    ports:
+      - 7070:80
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
-  letsencrypt:
+  pgadmin:

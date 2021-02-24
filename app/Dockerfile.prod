@@ -7,8 +7,8 @@ COPY ./entrypoint.prod.sh $APP_HOME
 COPY . $APP_HOME
 
 # lint
-RUN flake8 --ignore=E501,F401 $APP_HOME/api
-RUN flake8 --ignore=E501,F401 $APP_HOME/config
+# RUN flake8 --ignore=E501,F401 $APP_HOME/api
+# RUN flake8 --ignore=E501,F401 $APP_HOME/config
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME

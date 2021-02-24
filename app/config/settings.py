@@ -58,7 +58,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 CORS_ORIGIN_ALLOW_ALL = True
-
+ 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -146,7 +146,7 @@ USE_TZ = False
 STATIC_URL = "/staticfiles/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-MEDIA_URL = "https://api.aspringcloud.com/mediafiles/"
+MEDIA_URL = "https://gunsanapi.tasio.io:300/mediafiles/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 
 AUTH_USER_MODEL = 'api.User'
@@ -167,7 +167,7 @@ REST_USE_JWT = True
 
 # SMTP SET outlook.com
 EMAIL_HOST = 'smtp.office365.com'
-EMAIL_HOST_USER = 'bcchoi@aspringcloud.com'
+EMAIL_HOST_USER = 'dhkim3@aspringcloud.com'
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587  # SMTP Encryption STARTTLS
 EMAIL_USE_TLS = True

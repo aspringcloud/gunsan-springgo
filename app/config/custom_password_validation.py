@@ -113,6 +113,7 @@ class MinimumLengthValidator:
             # "Your password must contain at least %(min_length)d character.",
             # "Your password must contain at least %(min_length)d characters.",
             u"%(min_length)d 글자 이상의 비밀번호를 입렵하세요",
+            u"%(min_length)d 글자 이상의 비밀번호를 입렵하세요",
             self.min_length
         ) % {'min_length': self.min_length}
 
@@ -216,3 +217,4 @@ class NumericPasswordValidator:
         # return _('Your password can’t be entirely numeric.')
         return '비밀번호에 숫자 외의 문자를 포함하세요.'
 
+ 

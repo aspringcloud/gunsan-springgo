@@ -11,7 +11,7 @@ from api.serializers import UserSerializer, SiteSerializer, StationSerializer, K
     OperationLogPartialUpdateSerializer, OperationLogPartial2UpdateSerializer, \
     VehicleGetResponseSerializer, NavyaSerializer, KamoSerializer, EasymileSerializer, FleetSerializer, \
     EventSerializer, EventPassengerSerializer, EventMessageSerializer, \
-    OperationLogByDatepdateSerializer, AdSerializer
+    OperationLogByDatepdateSerializer, AdSerializer, SitePartialUpdateSerializer
 
 
 
@@ -35,10 +35,10 @@ from drf_yasg import openapi
 from geopy.distance import great_circle
 
 from django.shortcuts import get_object_or_404
+
 import requests
 import json
 import datetime
-
 import time
 
 # send email
@@ -106,6 +106,7 @@ logger.addHandler(ch)
         '401': "Authentication credentials were not provided.",
     },
 ))
+
 class UserViewSet(mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
@@ -193,7 +194,7 @@ class UserViewSet(mixins.ListModelMixin,
         obj = get_object_or_404(User, email=request.data['email'])
         start_time = time.time()
         message_body = request.data['message']
-        from_email = 'bcchoi@aspringcloud.com'
+        from_email = 'dhkim3@aspringcloud.com'
         to_email = []
         to_email.append(obj.email)
         ret = send_mail(
@@ -210,7 +211,6 @@ class UserViewSet(mixins.ListModelMixin,
             'from_email': from_email,
             'to_emai': to_email
         }
-
         if ret == 0 or ret == 1:
             return Response(context, status=status.HTTP_200_OK)
         else:
@@ -239,7 +239,7 @@ class UserViewSet(mixins.ListModelMixin,
                 "ccRecipients": [
                     {
                         "emailAddress": {
-                            "address": "bcchoi@aspringcloud.com"
+                            "address": "dhkim3@aspringcloud.com"
                         }
                     }
                 ]
@@ -247,7 +247,7 @@ class UserViewSet(mixins.ListModelMixin,
         }
         data['message']['body']['content'] = message
         data['message']['toRecipients'][0]['emailAddress']['address'] = email
-        # print(json.dumps(data, indent=4, sort_keys=True))
+        print(json.dumps(data, indent=4, sort_keys=True))
 
         url = 'https://graph.microsoft.com/v1.0/me/sendMail'
         r = requests.request(
@@ -303,7 +303,7 @@ class UserViewSet(mixins.ListModelMixin,
     operation_id='지정된 사이트 정보 업데이트',
     operation_description='지정된 사이트 정보를 일괄 업데이트 한다.',
     responses={
-        '200': "Ok",
+        '200': "ok",
         '403': "Unauthorized access to accounts",
         '401': "Authentication credentials were not provided.",
     },
@@ -312,7 +312,7 @@ class UserViewSet(mixins.ListModelMixin,
     operation_id='지정된 사이트 정보 업데이트',
     operation_description='지정된 사이트 정보를 부분 업데이트 한다.',
     responses={
-        '200': "Ok",
+        '200': "ok",
         '403': "Unauthorized access to accounts",
         '401': "Authentication credentials were not provided.",
     },
@@ -323,6 +323,12 @@ class SiteViewSet(mixins.ListModelMixin,
                   viewsets.GenericViewSet):
     queryset = Site.objects.all().order_by('mid')
     serializer_class = SiteSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            return SitePartialUpdateSerializer
+        else:
+            return SiteSerializer
 
     @swagger_auto_schema(
         responses={
@@ -479,6 +485,17 @@ class SiteViewSet(mixins.ListModelMixin,
 
         return Response(newobj, status=status.HTTP_200_OK)
 
+    # def update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance)
+    #     request = json.loads(request.body)
+    #     current_weather = str(request['current_weather'])
+    #     weather_forecast =  str(request['weather_forecast'])
+    #     air_quality =  str(request['air_quality'])
+    #     print('Data : ', request)
+    #     print('Current_weather : ',current_weather)
+
+    #     return Response('okay', status=status.HTTP_200_OK)
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
     operation_id='모든 정류장 정보',
@@ -839,12 +856,20 @@ class OperationLogViewSet(mixins.ListModelMixin,
             qs2 = OperationLog.objects.filter(vehicle=q1.pk)
             acc_pass = 0
             acc_dist = 0
+            acc_dvr = 0
             for q2 in qs2:
                 if q2.passenger is not None:
                     acc_pass += q2.passenger
                 if q2.distance is not None:
                     acc_dist += q2.distance
-            newobj.append({'vehicle': q1.name, 'accum_passenger': acc_pass, 'accum_distance': acc_dist})
+                if q2.dvr_volume is not None:
+                    acc_dvr += q2.dvr_volume
+            newobj.append({
+                'vehicle': q1.name, 
+                'accum_passenger': acc_pass, 
+                'accum_distance': acc_dist,
+                'accum_dvr_volume' : acc_dvr
+                })
         serializer = OperationLogSummarySerializer(data=newobj, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -1120,7 +1145,7 @@ class ManagerViewSet(mixins.CreateModelMixin,
                 "ccRecipients": [
                     {
                         "emailAddress": {
-                            "address": "bcchoi@aspringcloud.com"
+                            "address": "dhkim3@aspringcloud.com"
                         }
                     }
                 ]

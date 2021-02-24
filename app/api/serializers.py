@@ -79,6 +79,10 @@ class SiteSerializer(serializers.ModelSerializer):
         model = Site
         fields = '__all__'
 
+class SitePartialUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ('current_weather', 'weather_forecast', 'air_quality')
 
 class StationListSerializer(serializers.ModelSerializer):
     iskiosk = serializers.BooleanField(default=False, label='kiosk 존재 유무')
@@ -160,6 +164,7 @@ class OperationLogSummarySerializer(serializers.Serializer):
     vehicle = serializers.CharField(max_length=200, label='차량 이름')
     accum_passenger = serializers.IntegerField(label='누적 승객수')
     accum_distance = serializers.IntegerField(label='누적 운행거리')
+    accum_dvr_volume = serializers.IntegerField(label='누적 데이터 용량')
 
 
 class ManagerSerializer(serializers.ModelSerializer):
@@ -200,7 +205,7 @@ class VehiclePartialUpdateSerializer(serializers.ModelSerializer):
         fields = ('drive', 'gnss', 'speed', 'hitratio', 'battery', 'passenger', 'heading',
                   'door', 'lat', 'lon', 'isparked', 'operation_mode', 'state', 'drive_mode',
                   'webcam1', 'webcam2', 'webcam3', 'distance', 'rpm', 'brakeactuator', 'parkingbrake',
-                  'passed_station', 'eta')
+                  'passed_station', 'eta','latest_power_on', 'latest_power_off')
 
 
 class OperationLogPartialUpdateSerializer(serializers.Serializer):
